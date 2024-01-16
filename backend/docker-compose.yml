@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=safe-notes'
+      - 'POSTGRES_PASSWORD=wiktor'
+      - 'POSTGRES_USER=root'
+    ports:
+      - '15434:5432'
