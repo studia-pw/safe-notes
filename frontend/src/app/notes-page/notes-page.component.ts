@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { NoteCardComponent } from './components/note-card/note-card.component';
+import { NoteCardFormComponent } from './components/note-card-form/note-card-form.component';
 
 @Component({
   selector: 'app-notes-page',
   standalone: true,
-  imports: [NoteCardComponent],
+  imports: [NoteCardFormComponent],
   templateUrl: './notes-page.component.html',
   styleUrl: './notes-page.component.css',
 })

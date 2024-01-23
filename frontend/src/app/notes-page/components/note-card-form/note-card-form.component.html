@@ -12,8 +12,19 @@
     <mat-label>Password</mat-label>
     <input [disabled]="!enryptionToggled" matInput type="password" />
   </mat-form-field>
-  <mat-slide-toggle [(ngModel)]="enryptionToggled" name="enryption">
-    Note encryption {{ enryptionToggled }}
+  <mat-slide-toggle
+    (ngModelChange)="onVisibilityToggle()"
+    [(ngModel)]="publicToggled"
+    name="scope"
+  >
+    Make the note public
+  </mat-slide-toggle>
+  <mat-slide-toggle
+    [(ngModel)]="enryptionToggled"
+    [disabled]="publicToggled"
+    name="enryption"
+  >
+    Encrypt the note
   </mat-slide-toggle>
 
   <button color="primary" mat-raised-button>Save note</button>

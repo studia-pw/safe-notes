@@ -7,7 +7,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-note-card',
+  selector: 'app-note-card-form',
   standalone: true,
   imports: [
     MatFormFieldModule,
@@ -17,9 +17,14 @@ import { FormsModule } from '@angular/forms';
     MatSlideToggleModule,
     FormsModule,
   ],
-  templateUrl: './note-card.component.html',
-  styleUrl: './note-card.component.css',
+  templateUrl: './note-card-form.component.html',
+  styleUrl: './note-card-form.component.css',
 })
-export class NoteCardComponent {
+export class NoteCardFormComponent {
   enryptionToggled = false;
+  publicToggled = false;
+
+  onVisibilityToggle() {
+    this.enryptionToggled = false;
+  }
 }
