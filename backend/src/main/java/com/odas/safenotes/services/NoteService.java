@@ -7,7 +7,6 @@ import com.odas.safenotes.mappers.NoteMapper;
 import com.odas.safenotes.repositories.NoteRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +20,7 @@ public class NoteService {
 
     @Transactional
     public void createNote(CreateNoteRequest createNoteRequest) {
-        User user = new User();
+        User user = null;
         final var request = encodePasswordIfNeeded(createNoteRequest);
         Note note = noteMapper.fromCreateNoteRequest(request, user);
         noteRepository.save(note);
