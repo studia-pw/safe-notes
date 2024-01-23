@@ -1,12 +1,18 @@
 package com.odas.safenotes.controllers;
 
+import com.odas.safenotes.dto.note.CreateNoteRequest;
+import com.odas.safenotes.services.NoteService;
+import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/notes")
+@RequiredArgsConstructor
+@RequestMapping("/api/notes")
 public class NotesController {
+
+    private final NoteService noteService;
 
     @GetMapping
     public ResponseEntity<String> test() {
@@ -18,8 +24,9 @@ public class NotesController {
         return ResponseEntity.ok("Hello World!");
     }
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<Void> test3() {
+    @PostMapping()
+    public ResponseEntity<Void> createNote(@RequestBody CreateNoteRequest createNoteRequest) {
+        noteService.createNote(createNoteRequest);
         return ResponseEntity.noContent().build();
     }
 }
