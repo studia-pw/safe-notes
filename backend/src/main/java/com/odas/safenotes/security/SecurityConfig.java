@@ -13,8 +13,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.io.IOException;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +27,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors((cors) -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin((formLogin) -> formLogin.loginProcessingUrl("/api/auth/login")
                         .usernameParameter("email")
@@ -33,11 +38,29 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests((request) -> {
                     request
-                            .requestMatchers("/api/notes/**").permitAll()
-                            .requestMatchers("/api/auth/**").permitAll();
-                });
+                            .requestMatchers("/api/auth/**").permitAll()
+                            .anyRequest().authenticated();
+                })
+                .exceptionHandling((handler) -> {
+                    handler.authenticationEntryPoint((httpServletRequest, httpServletResponse, e) -> {
+                        httpServletResponse.setStatus(401);
+                    });
+                })
+        ;
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedOrigin("http://localhost:4200");
+        configuration.setAllowedMethods(List.of("GET", "POST"));
+        configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     private AuthenticationSuccessHandler successHandler() {
