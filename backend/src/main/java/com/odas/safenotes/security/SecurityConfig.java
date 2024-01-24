@@ -13,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,6 +24,7 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final long UNSUCCESSFUL_LOGIN_DELAY = 2000;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -36,6 +38,10 @@ public class SecurityConfig {
                         .failureHandler(failureHandler())
                         .permitAll()
                 )
+                .logout((logout) -> logout
+                        .logoutSuccessHandler(logoutSuccessHandler())
+                        .logoutUrl("/api/auth/logout")
+                        .permitAll())
                 .authorizeHttpRequests((request) -> {
                     request
                             .requestMatchers("/api/auth/**").permitAll()
@@ -82,9 +88,27 @@ public class SecurityConfig {
                                                 HttpServletResponse httpServletResponse, AuthenticationException e)
                     throws IOException, ServletException {
                 System.out.println("Failure");
+                try {
+                    Thread.sleep(UNSUCCESSFUL_LOGIN_DELAY);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
                 httpServletResponse.getWriter().append("Authentication failure");
                 httpServletResponse.setStatus(401);
             }
         };
+    }
+
+    private LogoutSuccessHandler logoutSuccessHandler() {
+        return new LogoutSuccessHandler() {
+            @Override
+            public void onLogoutSuccess(HttpServletRequest httpServletRequest,
+                                        HttpServletResponse httpServletResponse, Authentication authentication)
+                    throws IOException, ServletException {
+                System.out.println("Logout");
+                httpServletResponse.setStatus(200);
+            }
+        };
+
     }
 }

@@ -1,16 +1,12 @@
 package com.odas.safenotes.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Builder
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Note {
@@ -22,4 +18,8 @@ public class Note {
     private String content;
     private String hashedPassword;
     private Boolean isPublic;
+    private byte[] iv;
+
+    @ManyToOne
+    private User author;
 }
