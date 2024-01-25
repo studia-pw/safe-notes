@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthServiceService } from '../services/auth-service.service';
 import {
   FormBuilder,
@@ -30,18 +30,26 @@ export class LoginPageComponent implements OnInit {
   constructor(
     private authService: AuthServiceService,
     private formBuilder: FormBuilder,
+    private router: Router,
   ) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
   onLoginClicked() {
     const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
-    this.authService.login(email, password).subscribe((r) => console.log(r));
+    this.authService.login(email, password).subscribe(
+      (response) => {
+        this.router.navigate(['/home']);
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
   }
 }

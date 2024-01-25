@@ -1,5 +1,22 @@
 <div class="max-w-screen-xl mx-auto">
   <div class="max-w-screen-md mx-auto">
-    <app-note-card-form></app-note-card-form>
+    <app-note-card-form (noteCreated)="updateNotes()"></app-note-card-form>
+
+    <div class="mt-8 flex flex-col gap-y-4">
+      <hr />
+      <h1 class="text-7xl">Notes:</h1>
+      <mat-tab-group>
+        <mat-tab label="PUBLIC">
+          <ng-container *ngFor="let note of publicNotes">
+            <app-card-view [note]="note"></app-card-view>
+          </ng-container>
+        </mat-tab>
+        <mat-tab label="MY NOTES">
+          <ng-container *ngFor="let note of notes">
+            <app-card-view [note]="note"></app-card-view>
+          </ng-container>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
   </div>
 </div>

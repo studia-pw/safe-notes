@@ -1,0 +1,14 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ note.title }}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p [innerHTML]="note.content | sanitizerHtml"></p>
+  </mat-card-content>
+  <mat-card-actions *ngIf="note.isEncrypted">
+    <form (ngSubmit)="onDecrypt()" [formGroup]="form">
+      <input class="border-2" formControlName="notePassword" />
+      <button mat-button>Send password</button>
+    </form>
+  </mat-card-actions>
+</mat-card>

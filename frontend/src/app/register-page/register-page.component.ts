@@ -2,8 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { RouterLink } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { AuthServiceService } from '../services/auth-service.service';
 
 @Component({
@@ -25,13 +30,17 @@ export class RegisterPageComponent implements OnInit {
   constructor(
     private authService: AuthServiceService,
     private formBuilder: FormBuilder,
+    private router: Router,
   ) {}
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      email: [''],
-      password: [''],
-      passwordConfirmation: [''],
+      email: ['', Validators.email],
+      password: ['', [Validators.required, Validators.minLength(8)]],
+      passwordConfirmation: [
+        '',
+        [Validators.required, Validators.minLength(8)],
+      ],
     });
   }
 
@@ -44,8 +53,13 @@ export class RegisterPageComponent implements OnInit {
 
     console.log({ email, password, passwordConfirmation });
 
-    this.authService
-      .register(email, password, passwordConfirmation)
-      .subscribe((r) => console.log(r));
+    this.authService.register(email, password, passwordConfirmation).subscribe(
+      (response) => {
+        this.router.navigate(['/login']);
+      },
+      (error) => {
+        console.log(error);
+      },
+    );
   }
 }

@@ -1,8 +1,12 @@
 package com.odas.safenotes.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.odas.safenotes.domain.User;
+import com.odas.safenotes.mappers.UserMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,8 +27,10 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
     private final long UNSUCCESSFUL_LOGIN_DELAY = 2000;
+    private final UserMapper userMapper;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -63,6 +69,7 @@ public class SecurityConfig {
         configuration.addAllowedOrigin("http://localhost:4200");
         configuration.setAllowedMethods(List.of("GET", "POST"));
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
@@ -75,7 +82,10 @@ public class SecurityConfig {
             public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,
                                                 HttpServletResponse httpServletResponse, Authentication authentication)
                     throws IOException, ServletException {
+                User user = (User) authentication.getPrincipal();
+                final var userResource = userMapper.fromUser(user);
                 System.out.println("Success");
+                httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString(userResource));
                 httpServletResponse.setStatus(200);
             }
         };

@@ -19,7 +19,9 @@
 
       <p>You don't have an account? <a routerLink="/register">Register.</a></p>
 
-      <button color="primary" mat-flat-button>Login</button>
+      <button [disabled]="!loginForm.valid" color="primary" mat-flat-button>
+        Login
+      </button>
     </div>
   </div>
 </form>

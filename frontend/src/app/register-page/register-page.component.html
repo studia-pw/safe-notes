@@ -28,7 +28,9 @@
 
       <p>Already have an account? <a routerLink="/login">Login.</a></p>
 
-      <button color="primary" mat-flat-button>Register</button>
+      <button [disabled]="!registerForm.valid" color="primary" mat-flat-button>
+        Register
+      </button>
     </div>
   </div>
 </form>

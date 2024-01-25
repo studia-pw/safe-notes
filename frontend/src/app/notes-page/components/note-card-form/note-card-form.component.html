@@ -1,31 +1,34 @@
-<form class="flex flex-col gap-y-3">
+<form
+  (ngSubmit)="onSaveNoteClicked()"
+  [formGroup]="noteForm"
+  class="flex flex-col gap-y-3"
+>
   <mat-form-field>
     <mat-label>Title</mat-label>
-    <input matInput placeholder="Title" />
+    <input formControlName="title" matInput placeholder="Title" />
   </mat-form-field>
 
   <mat-form-field>
     <mat-label>Note content</mat-label>
-    <textarea matInput></textarea>
+    <textarea formControlName="content" matInput></textarea>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Password</mat-label>
-    <input [disabled]="!enryptionToggled" matInput type="password" />
+    <input
+      [disabled]="!enryptionToggled"
+      formControlName="password"
+      matInput
+      type="password"
+    />
   </mat-form-field>
-  <mat-slide-toggle
-    (ngModelChange)="onVisibilityToggle()"
-    [(ngModel)]="publicToggled"
-    name="scope"
-  >
+  <mat-slide-toggle formControlName="isPublic" name="scope">
     Make the note public
   </mat-slide-toggle>
-  <mat-slide-toggle
-    [(ngModel)]="enryptionToggled"
-    [disabled]="publicToggled"
-    name="enryption"
-  >
+  <mat-slide-toggle formControlName="isEncrypted" name="enryption">
     Encrypt the note
   </mat-slide-toggle>
 
-  <button color="primary" mat-raised-button>Save note</button>
+  <button [disabled]="!noteForm.valid" color="primary" mat-raised-button>
+    Save note
+  </button>
 </form>
