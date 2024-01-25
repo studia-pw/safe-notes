@@ -1,27 +1,40 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+
+export type User = {
+  id: number;
+  email: string;
+};
+export type LoggedInUser = User | null;
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthServiceService {
   baseUrl = 'http://localhost:8080/api/auth';
+  private user: BehaviorSubject<LoggedInUser> =
+    new BehaviorSubject<LoggedInUser>(null);
 
   constructor(private http: HttpClient) {}
 
+  public getUserAsObservable(): Observable<LoggedInUser> {
+    return this.user.asObservable();
+  }
+
+  public getUser(): LoggedInUser {
+    return this.user.getValue();
+  }
+
   login(email: string, password: string) {
-    let body = new URLSearchParams();
-    body.set('email', email);
-    body.set('password', password);
-    let header = new HttpHeaders({
-      'Content-Type': 'application/x-www-form-urlencoded',
-    });
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append(`password`, password);
 
     let options = {
-      headers: header,
       withCredentials: true,
     };
-    return this.http.post(`${this.baseUrl}/login`, body, options);
+    return this.http.post(`${this.baseUrl}/login`, formData, options);
   }
 
   register(email: string, password: string, passwordConfirmation: string) {
