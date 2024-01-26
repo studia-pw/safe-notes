@@ -7,7 +7,7 @@ import { Note } from '../dto/note';
   providedIn: 'root',
 })
 export class NoteServiceService {
-  baseUrl = 'http://localhost:8080/api/notes';
+  baseUrl = 'https://localhost/api/notes';
 
   constructor(private http: HttpClient) {}
 
