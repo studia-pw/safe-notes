@@ -10,6 +10,7 @@ import com.odas.safenotes.mappers.NoteMapper;
 import com.odas.safenotes.repositories.NoteRepository;
 import com.odas.safenotes.util.NoteEncoder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -85,7 +86,7 @@ public class NoteService {
 
         final var passwordHash = note.getHashedPassword();
         if (passwordHash == null || !encoder.matches(decodeNoteRequest.password(), passwordHash)) {
-            throw new IllegalArgumentException("Wrong password");
+            throw new AccessDeniedException("Wrong password");
         }
 
         Note decodedNote = decodeNote(note, decodeNoteRequest.password());

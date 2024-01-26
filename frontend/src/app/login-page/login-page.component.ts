@@ -3,7 +3,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, RouterLink } from '@angular/router';
-import { AuthServiceService } from '../services/auth-service.service';
+import {
+  AuthServiceService,
+  LoggedInUser,
+} from '../services/auth-service.service';
 import {
   FormBuilder,
   FormGroup,
@@ -45,6 +48,7 @@ export class LoginPageComponent implements OnInit {
     const password = this.loginForm.get('password')?.value;
     this.authService.login(email, password).subscribe(
       (response) => {
+        this.authService.setUser(response as LoggedInUser);
         this.router.navigate(['/home']);
       },
       (error) => {

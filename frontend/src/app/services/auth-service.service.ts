@@ -26,6 +26,10 @@ export class AuthServiceService {
     return this.user.getValue();
   }
 
+  public setUser(user: LoggedInUser) {
+    this.user.next(user);
+  }
+
   login(email: string, password: string) {
     const formData = new FormData();
     formData.append('email', email);
@@ -43,5 +47,14 @@ export class AuthServiceService {
       password,
       passwordConfirmation,
     });
+  }
+
+  logout() {
+    this.user.next(null);
+    return this.http.post(
+      `${this.baseUrl}/logout`,
+      {},
+      { withCredentials: true },
+    );
   }
 }

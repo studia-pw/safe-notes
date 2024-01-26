@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  db:
+    image: "postgres:latest"
+    environment:
+      - "POSTGRES_DB=safe-notes"
+      - "POSTGRES_PASSWORD=wiktor"
+      - "POSTGRES_USER=root"
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    networks:
+      - webnet
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - webnet
+    depends_on:
+      - db
+
+  client:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    networks:
+      - webnet
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./certs:/etc/ssl/certs:ro
+    networks:
+      - webnet
+    depends_on:
+      - api
+      - client
+
+volumes:
+  db-data:
+
+networks:
+  webnet:

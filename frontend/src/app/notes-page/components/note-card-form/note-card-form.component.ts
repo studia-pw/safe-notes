@@ -90,8 +90,4 @@ export class NoteCardFormComponent {
       this.noteCreated.emit();
     });
   }
-
-  onVisibilityToggle() {
-    this.enryptionToggled = false;
-  }
 }

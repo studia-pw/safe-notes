@@ -1,4 +1,8 @@
 <div class="max-w-screen-xl mx-auto">
+  <div class="flex flex-row justify-center items-center gap-x-4 pb-5">
+    <p>Logged in as: {{ loggedUser?.email }}</p>
+    <button (click)="onLogoutClicked()" mat-raised-button>Logout</button>
+  </div>
   <div class="max-w-screen-md mx-auto">
     <app-note-card-form (noteCreated)="updateNotes()"></app-note-card-form>
 
