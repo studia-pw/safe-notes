@@ -14,12 +14,7 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Password</mat-label>
-    <input
-      [disabled]="!enryptionToggled"
-      formControlName="password"
-      matInput
-      type="password"
-    />
+    <input formControlName="password" matInput type="password" />
   </mat-form-field>
   <mat-slide-toggle formControlName="isPublic" name="scope">
     Make the note public

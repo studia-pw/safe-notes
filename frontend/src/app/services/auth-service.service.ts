@@ -12,7 +12,7 @@ export type LoggedInUser = User | null;
   providedIn: 'root',
 })
 export class AuthServiceService {
-  baseUrl = 'http://localhost:8080/api/auth';
+  baseUrl = 'https://localhost/api/auth';
   private user: BehaviorSubject<LoggedInUser> =
     new BehaviorSubject<LoggedInUser>(null);
 
@@ -24,6 +24,10 @@ export class AuthServiceService {
 
   public getUser(): LoggedInUser {
     return this.user.getValue();
+  }
+
+  public setUser(user: LoggedInUser) {
+    this.user.next(user);
   }
 
   login(email: string, password: string) {
@@ -43,5 +47,14 @@ export class AuthServiceService {
       password,
       passwordConfirmation,
     });
+  }
+
+  logout() {
+    this.user.next(null);
+    return this.http.post(
+      `${this.baseUrl}/logout`,
+      {},
+      { withCredentials: true },
+    );
   }
 }

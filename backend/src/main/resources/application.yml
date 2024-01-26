@@ -1,4 +1,8 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://db:5432/safe-notes
+    username: root
+    password: wiktor
   jpa:
     hibernate:
       ddl-auto: create-drop

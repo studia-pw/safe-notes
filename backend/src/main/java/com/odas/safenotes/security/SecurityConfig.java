@@ -1,8 +1,11 @@
 package com.odas.safenotes.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.odas.safenotes.domain.LoginAudit;
 import com.odas.safenotes.domain.User;
+import com.odas.safenotes.mappers.LoginAuditService;
 import com.odas.safenotes.mappers.UserMapper;
+import com.odas.safenotes.repositories.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,12 +34,17 @@ import java.util.List;
 public class SecurityConfig {
     private final long UNSUCCESSFUL_LOGIN_DELAY = 2000;
     private final UserMapper userMapper;
+    private final LoginAuditService loginAuditService;
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors((cors) -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
+                .headers((headers) -> {
+                    headers.contentSecurityPolicy((content) -> content.policyDirectives("default-src 'self'"));
+                })
                 .formLogin((formLogin) -> formLogin.loginProcessingUrl("/api/auth/login")
                         .usernameParameter("email")
                         .passwordParameter("password")
@@ -66,7 +74,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:4200");
+        configuration.setAllowedOrigins(List.of("http://localhost:4200", "https://localhost:4200"));
         configuration.setAllowedMethods(List.of("GET", "POST"));
         configuration.setAllowedHeaders(List.of("Content-Type", "Authorization"));
         configuration.setAllowCredentials(true);
@@ -84,6 +92,13 @@ public class SecurityConfig {
                     throws IOException, ServletException {
                 User user = (User) authentication.getPrincipal();
                 final var userResource = userMapper.fromUser(user);
+                final var loginAudit = LoginAudit.builder()
+                        .id(null)
+                        .user(user)
+                        .ip(httpServletRequest.getRemoteAddr())
+                        .success(true)
+                        .build();
+                loginAuditService.saveLoginAudit(loginAudit);
                 System.out.println("Success");
                 httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString(userResource));
                 httpServletResponse.setStatus(200);
@@ -103,6 +118,17 @@ public class SecurityConfig {
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
+
+                System.out.println(httpServletRequest.getParameter("email"));
+                final var email = httpServletRequest.getParameter("email");
+                final var user = userRepository.findByEmailIgnoreCase(email);
+                final var loginAudit = LoginAudit.builder()
+                        .id(null)
+                        .user(user.orElse(null))
+                        .ip(httpServletRequest.getRemoteAddr())
+                        .success(false)
+                        .build();
+                loginAuditService.saveLoginAudit(loginAudit);
                 httpServletResponse.getWriter().append("Authentication failure");
                 httpServletResponse.setStatus(401);
             }

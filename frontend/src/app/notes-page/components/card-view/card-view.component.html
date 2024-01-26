@@ -9,6 +9,7 @@
     <form (ngSubmit)="onDecrypt()" [formGroup]="form">
       <input class="border-2" formControlName="notePassword" />
       <button mat-button>Send password</button>
+      <p *ngIf="error" class="text-red-600">{{ error }}</p>
     </form>
   </mat-card-actions>
 </mat-card>

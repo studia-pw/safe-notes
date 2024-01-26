@@ -13,6 +13,7 @@ import {
 } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { NoteServiceService } from '../../../services/note-service.service';
+import { HttpStatusCode } from '@angular/common/http';
 
 @Component({
   selector: 'app-card-view',
@@ -32,6 +33,7 @@ import { NoteServiceService } from '../../../services/note-service.service';
 export class CardViewComponent implements OnInit {
   @Input() note!: Note;
   form!: FormGroup;
+  error: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -46,8 +48,15 @@ export class CardViewComponent implements OnInit {
 
   onDecrypt() {
     let password = this.form.get('notePassword')?.value;
-    this.noteService.decryptNote(password, this.note.id).subscribe((req) => {
-      this.note.content = req.content;
-    });
+    this.noteService.decryptNote(password, this.note.id).subscribe(
+      (req) => {
+        this.note.content = req.content;
+      },
+      (error) => {
+        if (error.status === HttpStatusCode.Forbidden) {
+          this.error = 'Wrong password';
+        }
+      },
+    );
   }
 }
