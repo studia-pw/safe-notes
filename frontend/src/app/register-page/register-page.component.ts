@@ -31,8 +31,12 @@ export function passwordValidator(): ValidatorFn {
     const hasUpperCase =
       /[A-Z]/.test(password) ||
       (validationErrors['hasUpperCase'] = { value: control.value });
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasDigit = /\d/.test(password);
+    const hasLowerCase =
+      /[a-z]/.test(password) ||
+      (validationErrors['hasLowerCase'] = { value: control.value });
+    const hasDigit =
+      /\d/.test(password) ||
+      (validationErrors['hasDigit'] = { value: control.value });
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
     console.log(validationErrors);

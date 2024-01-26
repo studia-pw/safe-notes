@@ -5,6 +5,7 @@ import com.odas.safenotes.dto.note.DecodeNoteRequest;
 import com.odas.safenotes.dto.note.DecodedNoteResource;
 import com.odas.safenotes.dto.note.NoteResource;
 import com.odas.safenotes.services.NoteService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +42,7 @@ public class NotesController {
     }
 
     @PostMapping()
-    public ResponseEntity<Void> createNote(@RequestBody CreateNoteRequest createNoteRequest) {
+    public ResponseEntity<Void> createNote(@RequestBody @Valid CreateNoteRequest createNoteRequest) {
         noteService.createNote(createNoteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

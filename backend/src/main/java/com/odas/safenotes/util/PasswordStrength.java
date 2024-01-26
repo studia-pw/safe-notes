@@ -1,9 +1,22 @@
 package com.odas.safenotes.util;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+@Component
 public class PasswordStrength {
+
+    public boolean passwordIsStrongEnough(String password) {
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?=.*[a-zA-Z0-9@#$%^&+=!]).{8,}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
+    }
+
     private double countShannonEntropy(String password) {
         final var characterFrequencies = countCharacterFrequencies(password);
         final var passwordLength = password.length();

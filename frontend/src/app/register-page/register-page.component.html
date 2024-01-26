@@ -2,7 +2,22 @@
   <div class="max-w-[300px] mx-auto">
     <div class="flex flex-col">
       <h1>Register</h1>
-
+      <small>
+        <mat-error
+          *ngIf="registerForm.hasError('hasEightCharacters', 'password')"
+        >
+          Password must contain at least 8 characters
+        </mat-error>
+        <mat-error *ngIf="registerForm.hasError('hasUpperCase', 'password')">
+          Password must contain at least 1 uppercase character
+        </mat-error>
+        <mat-error *ngIf="registerForm.hasError('hasLowerCase', 'password')">
+          Password must contain at least 1 lowercase character
+        </mat-error>
+        <mat-error *ngIf="registerForm.hasError('hasDigit', 'password')">
+          Password must contain at least 1 digit
+        </mat-error>
+      </small>
       <mat-form-field>
         <mat-label>E-mail</mat-label>
         <input
@@ -14,14 +29,6 @@
 
       <mat-form-field>
         <mat-label>Password</mat-label>
-        <mat-error
-          *ngIf="registerForm.hasError('hasEightCharacters', 'password')"
-        >
-          Password must contain at least 8 characters
-        </mat-error>
-        <mat-error *ngIf="registerForm.hasError('hasUpperCase', 'password')">
-          Password must contain at least 1 uppercase character
-        </mat-error>
         <input formControlName="password" matInput placeholder="Password" />
       </mat-form-field>
       <mat-form-field>
