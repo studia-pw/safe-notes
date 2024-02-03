@@ -12,7 +12,7 @@ export type LoggedInUser = User | null;
   providedIn: 'root',
 })
 export class AuthServiceService {
-  baseUrl = 'https://localhost/api/auth';
+  baseUrl = 'http://localhost:8080/api/auth';
   private user: BehaviorSubject<LoggedInUser> =
     new BehaviorSubject<LoggedInUser>(null);
 

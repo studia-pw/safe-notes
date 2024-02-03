@@ -4,52 +4,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterLink } from '@angular/router';
 import {
-  AbstractControl,
   FormBuilder,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { AuthServiceService } from '../services/auth-service.service';
 import { NgIf } from '@angular/common';
-
-export function passwordValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const password: string = control.value;
-
-    if (!password) {
-      return null;
-    }
-
-    const validationErrors: ValidationErrors = {};
-
-    const hasEightCharacters =
-      password.length >= 8 ||
-      (validationErrors['hasEightCharacters'] = { value: control.value });
-    const hasUpperCase =
-      /[A-Z]/.test(password) ||
-      (validationErrors['hasUpperCase'] = { value: control.value });
-    const hasLowerCase =
-      /[a-z]/.test(password) ||
-      (validationErrors['hasLowerCase'] = { value: control.value });
-    const hasDigit =
-      /\d/.test(password) ||
-      (validationErrors['hasDigit'] = { value: control.value });
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-
-    console.log(validationErrors);
-    const isValid =
-      hasEightCharacters &&
-      hasUpperCase &&
-      hasLowerCase &&
-      hasDigit &&
-      hasSpecialChar;
-
-    return !isValid ? validationErrors : null;
-  };
-}
+import { passwordValidator } from '../util/password.validator';
 
 @Component({
   selector: 'app-register-page',
@@ -76,16 +38,27 @@ export class RegisterPageComponent implements OnInit {
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
-      email: ['', Validators.email],
-      password: [
-        '',
-        [Validators.required, Validators.minLength(8), passwordValidator()],
-      ],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, passwordValidator()]],
       passwordConfirmation: [
         '',
         [Validators.required, Validators.minLength(8)],
       ],
     });
+  }
+
+  passwordHasError() {
+    return !this.registerForm.get('password')?.valid;
+  }
+
+  getFirstPasswordError() {
+    const error = this.registerForm.get('password')?.errors;
+    if (!error) {
+      return '';
+    }
+    if (Object.keys(error)[0] == 'required') {
+      return 'Password is required';
+    } else return error[Object.keys(error)[0]];
   }
 
   onRegisterClicked() {
@@ -94,9 +67,6 @@ export class RegisterPageComponent implements OnInit {
     const passwordConfirmation = this.registerForm.get(
       'passwordConfirmation',
     )?.value;
-
-    console.log({ email, password, passwordConfirmation });
-    console.log(this.registerForm);
 
     this.authService.register(email, password, passwordConfirmation).subscribe(
       (response) => {

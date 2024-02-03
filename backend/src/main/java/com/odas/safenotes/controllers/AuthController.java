@@ -23,13 +23,4 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<Void> login() {
-//        return ResponseEntity.noContent().build();
-//    }
-
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout() {
-        return ResponseEntity.noContent().build();
-    }
 }
