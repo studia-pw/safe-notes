@@ -17,7 +17,7 @@ public class UserService {
 
     public void register(RegisterUserRequest registerUserRequest) {
         if (userRepository.existsByEmailIgnoreCase(registerUserRequest.email())) {
-            throw new IllegalArgumentException("User with email " + registerUserRequest.email() + " already exists");
+            throw new IllegalArgumentException("User with this email already exists");
         }
 
         if (!registerUserRequest.password().equals(registerUserRequest.passwordConfirmation())) {
