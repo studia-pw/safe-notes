@@ -13,10 +13,18 @@ export type LoggedInUser = User | null;
 })
 export class AuthServiceService {
   baseUrl = 'http://localhost:8080/api/auth';
-  private user: BehaviorSubject<LoggedInUser> =
-    new BehaviorSubject<LoggedInUser>(null);
+  private user: BehaviorSubject<LoggedInUser>;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    const user = localStorage.getItem('user');
+    let loggedInUser: LoggedInUser = null;
+
+    if (user) {
+      loggedInUser = JSON.parse(user);
+    }
+
+    this.user = new BehaviorSubject<LoggedInUser>(loggedInUser);
+  }
 
   public getUserAsObservable(): Observable<LoggedInUser> {
     return this.user.asObservable();
@@ -28,6 +36,7 @@ export class AuthServiceService {
 
   public setUser(user: LoggedInUser) {
     this.user.next(user);
+    localStorage.setItem('user', JSON.stringify(user));
   }
 
   login(email: string, password: string) {
@@ -51,6 +60,7 @@ export class AuthServiceService {
 
   logout() {
     this.user.next(null);
+    localStorage.removeItem('user');
     return this.http.post(
       `${this.baseUrl}/logout`,
       {},

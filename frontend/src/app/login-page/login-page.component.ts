@@ -53,7 +53,6 @@ export class LoginPageComponent implements OnInit {
     this.isProcessing = true;
     const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
-    console.log(this.isProcessing);
     this.authService.login(email, password).subscribe(
       (response) => {
         this.isProcessing = false;
@@ -63,7 +62,6 @@ export class LoginPageComponent implements OnInit {
       (error) => {
         this.isProcessing = false;
         this.authError = true;
-        console.log(error);
       },
     );
   }
