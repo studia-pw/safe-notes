@@ -2,6 +2,9 @@
   <div class="max-w-[300px] mx-auto">
     <div class="flex flex-col gap-y-4">
       <h1>Register</h1>
+      <mat-error *ngIf="registerError" class="text-xs"
+        >User with this e-mail already exists!</mat-error
+      >
       <mat-form-field>
         <mat-label>E-mail</mat-label>
         <input

@@ -13,6 +13,8 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { NgIf } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login-page',
@@ -23,12 +25,16 @@ import {
     MatButtonModule,
     RouterLink,
     ReactiveFormsModule,
+    NgIf,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css',
 })
 export class LoginPageComponent implements OnInit {
   loginForm!: FormGroup;
+  isProcessing = false;
+  authError = false;
 
   constructor(
     private authService: AuthServiceService,
@@ -44,15 +50,18 @@ export class LoginPageComponent implements OnInit {
   }
 
   onLoginClicked() {
+    this.isProcessing = true;
     const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
     this.authService.login(email, password).subscribe(
       (response) => {
+        this.isProcessing = false;
         this.authService.setUser(response as LoggedInUser);
         this.router.navigate(['/home']);
       },
       (error) => {
-        console.log(error);
+        this.isProcessing = false;
+        this.authError = true;
       },
     );
   }

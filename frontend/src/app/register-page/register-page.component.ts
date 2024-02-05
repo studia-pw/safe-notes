@@ -12,6 +12,7 @@ import {
 import { AuthServiceService } from '../services/auth-service.service';
 import { NgIf } from '@angular/common';
 import { passwordValidator } from '../util/password.validator';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-register-page',
@@ -29,6 +30,7 @@ import { passwordValidator } from '../util/password.validator';
 })
 export class RegisterPageComponent implements OnInit {
   registerForm!: FormGroup;
+  registerError = false;
 
   constructor(
     private authService: AuthServiceService,
@@ -62,6 +64,7 @@ export class RegisterPageComponent implements OnInit {
   }
 
   onRegisterClicked() {
+    this.registerError = false;
     const email = this.registerForm.get('email')?.value;
     const password = this.registerForm.get('password')?.value;
     const passwordConfirmation = this.registerForm.get(
@@ -73,7 +76,10 @@ export class RegisterPageComponent implements OnInit {
         this.router.navigate(['/login']);
       },
       (error) => {
-        console.log(error);
+        const err = error as HttpErrorResponse;
+        if (err.error.startsWith('User with email')) {
+          this.registerError = true;
+        }
       },
     );
   }

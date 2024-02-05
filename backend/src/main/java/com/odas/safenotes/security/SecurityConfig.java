@@ -1,8 +1,5 @@
 package com.odas.safenotes.security;
 
-import com.odas.safenotes.mappers.LoginAuditService;
-import com.odas.safenotes.mappers.UserMapper;
-import com.odas.safenotes.repositories.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -24,11 +22,9 @@ import java.io.IOException;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final UserMapper userMapper;
-    private final LoginAuditService loginAuditService;
-    private final UserRepository userRepository;
     private final CorsConfigurationSource corsConfigurationSource;
     private final AuthenticationSuccessHandler successHandler;
+    private final AuthenticationFailureHandler failureHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -42,6 +38,7 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(successHandler)
+                        .failureHandler(failureHandler)
                         .permitAll()
                 )
                 .logout((logout) -> logout

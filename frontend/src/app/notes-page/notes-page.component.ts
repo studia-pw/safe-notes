@@ -36,11 +36,13 @@ export class NotesPageComponent {
   ) {}
 
   ngOnInit() {
-    this.noteService
-      .getUserNotes(this.loggedUser?.id ?? -1)
-      .subscribe((notes) => {
+    if (this.loggedUser != null) {
+      this.noteService.getUserNotes(this.loggedUser.id).subscribe((notes) => {
         this.notes = notes;
       });
+    } else {
+      this.notes = [];
+    }
 
     this.noteService.getPublicNotes().subscribe((notes) => {
       this.publicNotes = notes;
