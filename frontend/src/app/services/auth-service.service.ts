@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { QrCode } from '../dto/qr-code';
 
 export type User = {
   id: number;
@@ -39,10 +40,11 @@ export class AuthServiceService {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  login(email: string, password: string) {
+  login(email: string, password: string, code: string) {
     const formData = new FormData();
     formData.append('email', email);
-    formData.append(`password`, password);
+    formData.append('password', password);
+    formData.append('code', code);
 
     let options = {
       withCredentials: true,
@@ -56,6 +58,10 @@ export class AuthServiceService {
       password,
       passwordConfirmation,
     });
+  }
+
+  get2faQRCode(email: string) {
+    return this.http.get<QrCode>(`${this.baseUrl}/2fa/${email}`);
   }
 
   logout() {

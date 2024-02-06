@@ -46,6 +46,15 @@ export class LoginPageComponent implements OnInit {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
+      code: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('\\d+'),
+          Validators.minLength(6),
+          Validators.maxLength(6),
+        ],
+      ],
     });
   }
 
@@ -53,7 +62,9 @@ export class LoginPageComponent implements OnInit {
     this.isProcessing = true;
     const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
-    this.authService.login(email, password).subscribe(
+    const code = this.loginForm.get('code')?.value;
+
+    this.authService.login(email, password, code).subscribe(
       (response) => {
         this.isProcessing = false;
         this.authService.setUser(response as LoggedInUser);
