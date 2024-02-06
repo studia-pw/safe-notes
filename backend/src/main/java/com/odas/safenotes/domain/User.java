@@ -2,6 +2,7 @@ package com.odas.safenotes.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.jboss.aerogear.security.otp.api.Base32;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -21,6 +22,9 @@ public class User implements UserDetails {
     private Long id;
     private String email;
     private String password;
+
+    @Builder.Default
+    private String secret = Base32.random();
 
     @OneToMany(mappedBy = "author")
     private List<Note> notes;

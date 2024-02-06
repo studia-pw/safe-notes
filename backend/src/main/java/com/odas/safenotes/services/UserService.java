@@ -7,6 +7,8 @@ import com.odas.safenotes.util.PasswordStrength;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -14,6 +16,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordStrength passwordStrength;
+    private final QRService qrService;
 
     public void register(RegisterUserRequest registerUserRequest) {
         if (userRepository.existsByEmailIgnoreCase(registerUserRequest.email())) {
@@ -31,6 +34,19 @@ public class UserService {
 
         final var user = userMapper.fromRegisterUserRequest(registerUserRequest);
         userRepository.save(user);
+    }
+
+    public String twoFactorAuth(String email) {
+        final var user = userRepository.findByEmailIgnoreCase(email).orElseThrow();
+        String qrUrl = null;
+
+        try {
+            qrUrl = qrService.generateQRUrl(user);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return qrUrl;
     }
 
 
