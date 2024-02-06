@@ -22,6 +22,18 @@
         <input formControlName="password" matInput placeholder="Password" />
       </mat-form-field>
 
+      <mat-form-field>
+        <mat-label>TOTP code</mat-label>
+        <mat-hint>{{ code.value.length }} / 6</mat-hint>
+        <input
+          #code
+          formControlName="code"
+          matInput
+          maxlength="6"
+          placeholder="TOTP 6-digit code"
+        />
+      </mat-form-field>
+
       <p>You don't have an account? <a routerLink="/register">Register.</a></p>
 
       <button [disabled]="!loginForm.valid" color="primary" mat-flat-button>

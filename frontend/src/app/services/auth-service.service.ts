@@ -40,10 +40,11 @@ export class AuthServiceService {
     localStorage.setItem('user', JSON.stringify(user));
   }
 
-  login(email: string, password: string) {
+  login(email: string, password: string, code: string) {
     const formData = new FormData();
     formData.append('email', email);
-    formData.append(`password`, password);
+    formData.append('password', password);
+    formData.append('code', code);
 
     let options = {
       withCredentials: true,
