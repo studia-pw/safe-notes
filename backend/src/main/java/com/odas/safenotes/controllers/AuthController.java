@@ -1,7 +1,6 @@
 package com.odas.safenotes.controllers;
 
 import com.odas.safenotes.dto.user.RegisterUserRequest;
-import com.odas.safenotes.dto.user.TotpQrRequest;
 import com.odas.safenotes.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +23,10 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/2fa")
-    public ResponseEntity<Map<String, String>> twoFactorAuth(@RequestBody @Valid TotpQrRequest totpQrRequest) {
+    @GetMapping("/2fa/{email}")
+    public ResponseEntity<Map<String, String>> twoFactorAuth(@PathVariable String email) {
         HashMap<String, String> response = new HashMap<>();
-        response.put("qrUrl", userService.twoFactorAuth(totpQrRequest.email()));
+        response.put("qrUrl", userService.twoFactorAuth(email));
 
         return ResponseEntity.ok(response);
     }

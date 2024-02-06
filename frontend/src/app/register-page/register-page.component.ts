@@ -73,11 +73,11 @@ export class RegisterPageComponent implements OnInit {
 
     this.authService.register(email, password, passwordConfirmation).subscribe(
       (response) => {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/2fa'], { queryParams: { email: email } });
       },
       (error) => {
         const err = error as HttpErrorResponse;
-        if (err.error.startsWith('User with email')) {
+        if (err.error.startsWith('User with this email')) {
           this.registerError = true;
         }
       },

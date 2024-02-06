@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { QrCode } from '../dto/qr-code';
 
 export type User = {
   id: number;
@@ -56,6 +57,10 @@ export class AuthServiceService {
       password,
       passwordConfirmation,
     });
+  }
+
+  get2faQRCode(email: string) {
+    return this.http.get<QrCode>(`${this.baseUrl}/2fa/${email}`);
   }
 
   logout() {

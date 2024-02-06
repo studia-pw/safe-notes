@@ -1,0 +1,8 @@
+<main class="flex flex-col justify-center items-center gap-y-4">
+  <h3>Scan this QR code to log in using Google Authenticator</h3>
+  <img alt="QR code" ngSrc="{{ qrCodeUrl }}" />
+  <button (click)="onButtonClicked()" color="primary" mat-raised-button>
+    Done, take me to the login page.
+    <mat-icon>check</mat-icon>
+  </button>
+</main>
